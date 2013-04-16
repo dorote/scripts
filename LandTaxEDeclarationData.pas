@@ -973,7 +973,7 @@ end;
 //добавить общий итог по части 2 - аренда
 procedure TDeclaration.AppendTotal2(root: IXmlElement);
 var total2:IXmlElement;
-    totals:array[1..cTotal2Rows,1..cTotal2ColumnsMax] of currency;
+   // totals:array[1..cTotal2Rows,1..cTotal2ColumnsMax] of currency;
     r,c,i,m,n:integer;
     imnsIdx,objIdx:integer;
     imns:TImns;
@@ -993,7 +993,7 @@ begin
   end else begin
    pPart2Total:=cPart2Total_2013;
    pTotal2Columns:=13;
-   pTotal2_Col_Payed8:=5
+  // pTotal2_Col_Payed8:=5
   end;
 
 // TODO как то определить иной срок в этой части и разложить по срокам
@@ -1002,6 +1002,7 @@ begin
 // FillChar(totals,SizeOf(totals),0);
 
  FillChar(MonthTotals,SizeOf(MonthTotals),0);
+ MonthTotalsAll:=0;
 
  for imnsIdx:=0 to mLeaseImns.Count-1 do begin
   imns:=mLeaseImns.Items[imnsIdx];
@@ -1013,7 +1014,6 @@ begin
    totals[cTotal2_Row_Total1,cTotal2_Col_Payed5]:=totals[cTotal2_Row_Total1,cTotal2_Col_Payed5]+ltObj.mRecpay5Payed;
    totals[cTotal2_Row_Total1,pTotal2_Col_Payed8]:=totals[cTotal2_Row_Total1,pTotal2_Col_Payed8]+ltObj.mRecpay8Payed;
    totals[cTotal2_Row_Total1,cTotal2_Col_Payed9]:=totals[cTotal2_Row_Total1,cTotal2_Col_Payed9]+ltObj.mRecpay9Payed;}
-   MonthTotalsAll:=0;
    MonthTotalsAll:=MonthTotalsAll+ltObj.mTotalToPay;       //итого
    for m:=1 to 12 do begin                                //сгрупировали суммы по срокам
     MonthTotals[m]:=MonthTotals[m]+ltObj.mMonthTotals[m];
@@ -1038,7 +1038,10 @@ begin
    else total:=0;
 
    if (r=1) or (r=3) then begin
-    total2.AppendElement(pPart2Total+'_r'+IntToStr(r)+'c'+IntToStr(n)).Text:=CurrToStr(MonthTotals[n]);
+    if n=0 then
+    total2.AppendElement(pPart2Total+'_r'+IntToStr(r)+'c'+IntToStr(n)).Text:=CurrToStr(MonthTotalsAll)
+    else
+    total2.AppendElement(pPart2Total+'_r'+IntToStr(r)+'c'+IntToStr(n)).Text:=CurrToStr(total);
    end else
     total2.AppendElement(pPart2Total+'_r'+IntToStr(r)+'c'+IntToStr(n)).Text:='0';
   end;  
